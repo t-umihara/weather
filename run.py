@@ -116,25 +116,25 @@ def web():
         k = k + 1
 
 #警報が出た市町村を塗りつぶす
-    height = 600
-    width = 600
-    k = 0
-    i = 40
-    img = cv2.imread('static/img/map/toyama_prefecture.png', cv2.IMREAD_COLOR)
-    #富山市(40,250,40),舟橋村(41,250,40),上市町(42,250,40),立山町(43,250,40),魚津市(44,250,40)
-    #滑川市(45,250,40),黒部市(46,250,40),入善町(47,250,40),朝日町(48,250,40),高岡市(49,250,40)
-    #氷見市(50,250,40),小矢部市(51,250,40),射水市(52,250,40),砺波市(53,250,40),南砺市(54,250,40)
-    for city in range(15):
-        if(alert[k]) != '発表なし':
-            for x in range(width):
-                for y in range(height):
-                    b, g, r = img[y,x]
-                    if(b,g,r) == (i,250,40):
-                        img[y,x] = (0,0,255)
-        k = k + 1
-        i = i + 1
-
-    cv2.imwrite('static/img/map/alertmap.png', img)
+    # height = 600
+    # width = 600
+    # k = 0
+    # i = 40
+    # img = cv2.imread('static/img/map/toyama_prefecture.png', cv2.IMREAD_COLOR)
+    # #富山市(40,250,40),舟橋村(41,250,40),上市町(42,250,40),立山町(43,250,40),魚津市(44,250,40)
+    # #滑川市(45,250,40),黒部市(46,250,40),入善町(47,250,40),朝日町(48,250,40),高岡市(49,250,40)
+    # #氷見市(50,250,40),小矢部市(51,250,40),射水市(52,250,40),砺波市(53,250,40),南砺市(54,250,40)
+    # for city in range(15):
+    #     if(alert[k]) != '発表なし':
+    #         for x in range(width):
+    #             for y in range(height):
+    #                 b, g, r = img[y,x]
+    #                 if(b,g,r) == (i,250,40):
+    #                     img[y,x] = (0,0,255)
+    #     k = k + 1
+    #     i = i + 1
+    #
+    # cv2.imwrite('static/img/map/alertmap.png', img)
 
 
 #index.htmlに送る変数の定義
