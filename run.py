@@ -8,7 +8,7 @@ import time
 import schedule
 import datetime
 from PIL import Image, ImageFilter
-import cv2
+# import cv2
 import numpy as np
 
 
