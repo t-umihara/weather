@@ -22,8 +22,8 @@
         font-family: "Impact";
         display: inline;
         text-align: center;
-        top: 100px;
-        font-size: 50px;
+        top: 10%;
+        font-size: 300%;
       }
       .details{
         text-align: center;
@@ -32,7 +32,7 @@
       .details_title{
         text-align: center;
         font-weight: bold;
-        color: #008BBB;
+        color: black;
       }
       .details_warn{
         text-align: center;
@@ -47,27 +47,27 @@
         }
       }
       .table{
-        font-size: 25pt;
+        font-size: 210% / 4;
       }
      .info{
-       font-size:18pt;
+       font-size:10%;
        font-weight: bold;
        text-align: center;
      }
       .today_weather{
-        font-size: 40px;
+        font-size: 250% / 4;
         display: inline;
         float:left;
-        margin-left:200px;
+        margin-left:7%;
       }
       .tomorrow_weather{
-        font-size: 40px;
+        font-size: 250% / 4;
         display: inline;
         float: right;
-        margin-right: 290px;
+        margin-right: 17%;
       }
       .today_weather_icon{
-        margin-left: 170px;
+        margin-left: 5%;
         display: inline;
         float: left;
         clear: both;
@@ -75,14 +75,14 @@
       .tomorrow_weather_icon{
         display: inline;
         float: right;
-        margin-right: 245px;
+        margin-right: 15%;
       }
       .today-header{
-        margin-left: 50px;
+        margin-left: 10% / 2;
       }
       .header{
         font-weight: bold;
-        margin-left: 30px;
+        /* margin-left: 30px; */
         text-align: center;"
       }
       .now_header{
@@ -93,24 +93,25 @@
         float: left;
         /* width: 310px; */
         clear: both;
-        margin-left: 100px;
+        margin-left: 8% / 2;
       }
       .tomorrow_maxmin{
         display: inline-block;
         float: left;
-        margin-left: 350px;
+        margin-left: 15%;
       }
       .now_weather{
         display: inline-block;
         float: left;
+        font-size: 95%
       }
       .rain{
         display: inline-block;
         float: left;
-        margin-left: 30px;
+        margin-left: 2% / 2;
       }
       .warning{
-        font-size: 15pt;
+        font-size: 90%;
         text-align: center;
         font-weight: bold;
         clear: both;
@@ -118,15 +119,15 @@
       .tomorrow_rain{
         display: inline-block;
         float: left;
-        margin-left: 30px;
-        margin-right: 100px;
+        margin-left: 2% / 2;
+        margin-right: 0%;
       }
       .warning_content{
         color: red;
-        font-size: 20px;
+        font-size: 125%;
         text-align: center;
         font-weight: bold;
-        margin-left: 36px;
+        margin-left: 240% / 2;
       }
       td {
         font-weight: bold;
@@ -139,7 +140,7 @@
         <nav class="navbar navbar-expand-md navbar-dark box-shadow p-1"  style="background-color: seagreen; font-family: arial black">
             <!-- <div class="container d-flex justify-content-start"> -->
                 <a href="/" class="navbar-brand d-flex align-items-center">
-                    <strong style="font-size:40pt; font-weight: bold;">富 山 の 天 気 予 報 ！</strong>
+                    <strong style="font-size:125%; text-align: center; font-weight: bold;">富 山 の 天 気 予 報 ！</strong>
                 </a>
         </nav>
     </header>
@@ -153,133 +154,133 @@
           const weather = "{{ values.weather }}";
           switch(weather){
             case '晴':
-              document.write('<img src="/static/img/晴.jpg" alt="晴れ" title="晴れ" width="100%;" height="100%;" id="weather"/>')
+              document.write('<img src="/static/img/晴.jpg" alt="晴れ" title="晴れ" width="230px;" height="115px;" id="weather"/>')
               break;
             case '雨':
-              document.write('<img src="/static/img/雨.png" alt="雨" title="雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨.png" alt="雨" title="雨" width="230px;" height="115px;"/>')
               break;
             case '暴風雨':
-              document.write('<img src="/static/img/暴風雨.png" alt="暴風雨" title="暴風雨 width="100%;" height="100%;""/>')
+              document.write('<img src="/static/img/暴風雨.png" alt="暴風雨" title="暴風雨 width="230px;" height="115px;""/>')
               break;
             case '曇':
-              document.write('<img src="/static/img/曇.png" alt="曇" title="曇" id="weather" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇.png" alt="曇" title="曇" id="weather" width="230px;" height="115px;"/>')
               break;
             case '雪':
-              document.write('<img src="/static/img/雪.png" alt="雪" title="雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪.png" alt="雪" title="雪" width="230px;" height="115px;"/>')
               break;
             case '暴風雪':
-              document.write('<img src="/static/img/暴風雪.png" alt="暴風雪" title="暴風雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/暴風雪.png" alt="暴風雪" title="暴風雪" width="230px;" height="115px;"/>')
               break;
             case '晴のち雨':
-              document.write('<img src="/static/img/晴のち雨.png" alt="晴のち雨" title="晴のち雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴のち雨.png" alt="晴のち雨" title="晴のち雨" width="230px;" height="115px;"/>')
               break;
             case '晴一時雨':
-              document.write('<img src="/static/img/晴時々雨.png" alt="晴一時雨" title="晴一時雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴時々雨.png" alt="晴一時雨" title="晴一時雨" width="230px;" height="115px;"/>')
               break;
             case '晴時々雨':
-              document.write('<img src="/static/img/晴時々雨.png" alt="晴時々雨" title="晴時々雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴時々雨.png" alt="晴時々雨" title="晴時々雨" width="230px;" height="115px;"/>')
               break;
             case '晴のち曇':
-              document.write('<img src="/static/img/晴のち曇.png" alt="晴のち曇" title="晴のち曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴のち曇.png" alt="晴のち曇" title="晴のち曇" width="230px;" height="115px;"/>')
               break;
             case '晴一時曇':
-              document.write('<img src="/static/img/晴時々曇.png" alt="晴一時曇" title="晴一時曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴時々曇.png" alt="晴一時曇" title="晴一時曇" width="230px;" height="115px;"/>')
               break;
             case '晴時々曇':
-              document.write('<img src="/static/img/晴時々曇.png" alt="晴時々曇" title="晴時々曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴時々曇.png" alt="晴時々曇" title="晴時々曇" width="230px;" height="115px;"/>')
               break;
             case '晴のち雪':
-              document.write('<img src="/static/img/晴のち雪.png" alt="晴のち雪" title="晴のち雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴のち雪.png" alt="晴のち雪" title="晴のち雪" width="230px;" height="115px;"/>')
               break;
             case '晴一時雪':
-              document.write('<img src="/static/img/晴時々雪.png" alt="晴一時雪" title="晴一時雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴時々雪.png" alt="晴一時雪" title="晴一時雪" width="230px;" height="115px;"/>')
               break;
             case '晴時々雪':
-              document.write('<img src="/static/img/晴時々雪.png" alt="晴時々雪" title="晴時々雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴時々雪.png" alt="晴時々雪" title="晴時々雪" width="230px;" height="115px;"/>')
               break;
             case '曇のち雨':
-              document.write('<img src="/static/img/曇のち雨.png" alt="曇のち雨" title="曇のち雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇のち雨.png" alt="曇のち雨" title="曇のち雨" width="230px;" height="115px;"/>')
               break;
             case '曇一時雨':
-              document.write('<img src="/static/img/曇時々雨.png" alt="曇一時雨" title="曇一時雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇時々雨.png" alt="曇一時雨" title="曇一時雨" width="230px;" height="115px;"/>')
               break;
             case '曇時々雨':
-              document.write('<img src="/static/img/曇時々雨.png" alt="曇時々雨" title="曇時々雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇時々雨.png" alt="曇時々雨" title="曇時々雨" width="230px;" height="115px;"/>')
               break;
             case '曇のち晴':
-              document.write('<img src="/static/img/曇のち晴.png" alt="曇のち晴" title="雲のち晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇のち晴.png" alt="曇のち晴" title="雲のち晴" width="230px;" height="115px;"/>')
               break;
             case '曇一時晴':
-              document.write('<img src="/static/img/曇時々晴.png" alt="曇一時晴" title="曇一時晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇時々晴.png" alt="曇一時晴" title="曇一時晴" width="230px;" height="115px;"/>')
               break;
             case '曇時々晴':
-              document.write('<img src="/static/img/曇時々晴.png" alt="曇時々晴" title="曇時々晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇時々晴.png" alt="曇時々晴" title="曇時々晴" width="230px;" height="115px;"/>')
               break;
             case '曇のち雪':
-              document.write('<img src="/static/img/曇のち雪.png" alt="曇のち雪" title="曇のち雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇のち雪.png" alt="曇のち雪" title="曇のち雪" width="230px;" height="115px;"/>')
               break;
             case '曇一時雪':
-              document.write('<img src="/static/img/曇時々雪.png" alt="曇一時雪" title="曇一時雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇時々雪.png" alt="曇一時雪" title="曇一時雪" width="230px;" height="115px;"/>')
               break;
             case '曇時々雪':
-              document.write('<img src="/static/img/曇時々雪.png" alt="曇時々雪" title="曇時々雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇時々雪.png" alt="曇時々雪" title="曇時々雪" width="230px;" height="115px;"/>')
               break;
             case '雨のち晴':
-              document.write('<img src="/static/img/雨のち晴.png" alt="雨のち晴" title="雨のち晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨のち晴.png" alt="雨のち晴" title="雨のち晴" width="230px;" height="115px;"/>')
               break;
             case '雨一時晴':
-              document.write('<img src="/static/img/雨時々晴.png" alt="雨一時晴" title="雨一時晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨時々晴.png" alt="雨一時晴" title="雨一時晴" width="230px;" height="115px;"/>')
               break;
             case '雨時々晴':
-              document.write('<img src="/static/img/雨時々晴.png" alt="雨時々晴" title="雨時々晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨時々晴.png" alt="雨時々晴" title="雨時々晴" width="230px;" height="115px;"/>')
               break;
             case '雨のち曇':
-              document.write('<img src="/static/img/雨のち曇.png" alt="雨のち曇" title="雨のち曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨のち曇.png" alt="雨のち曇" title="雨のち曇" width="230px;" height="115px;"/>')
               break;
             case '雨一時曇':
-              document.write('<img src="/static/img/雨時々曇.png" alt="雨一時曇" title="雨一時曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨時々曇.png" alt="雨一時曇" title="雨一時曇" width="230px;" height="115px;"/>')
               break;
             case '雨時々曇':
-              document.write('<img src="/static/img/雨時々曇.png" alt="雨時々曇" title="雨時々曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨時々曇.png" alt="雨時々曇" title="雨時々曇" width="230px;" height="115px;"/>')
               break;
             case '雨のち雪':
-              document.write('<img src="/static/img/雨のち雪.png" alt="雨のち雪" title="雨のち雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨のち雪.png" alt="雨のち雪" title="雨のち雪" width="230px;" height="115px;"/>')
               break;
             case '雨一時雪':
-              document.write('<img src="/static/img/雨時々雪.png" alt="雨一時雪" title="雨一時雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨時々雪.png" alt="雨一時雪" title="雨一時雪" width="230px;" height="115px;"/>')
               break;
             case '雨時々雪':
-              document.write('<img src="/static/img/雨時々雪.png" alt="雨時々雪" title="雨時々雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨時々雪.png" alt="雨時々雪" title="雨時々雪" width="230px;" height="115px;"/>')
               break;
             case '雪のち晴':
-              document.write('<img src="/static/img/雪のち晴.png" alt="雪のち晴" title="雪のち晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪のち晴.png" alt="雪のち晴" title="雪のち晴" width="230px;" height="115px;"/>')
               break;
             case '雪一時晴':
-              document.write('<img src="/static/img/雪時々晴.png" alt="雪一時晴" title="雪一時晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪時々晴.png" alt="雪一時晴" title="雪一時晴" width="230px;" height="115px;"/>')
               break;
             case '雪時々晴':
-              document.write('<img src="/static/img/雪時々晴.png" alt="雪時々晴" title="雪時々晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪時々晴.png" alt="雪時々晴" title="雪時々晴" width="230px;" height="115px;"/>')
               break;
             case '雪のち曇':
-              document.write('<img src="/static/img/雪のち曇.png" alt="雪のち曇" title="雪のち曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪のち曇.png" alt="雪のち曇" title="雪のち曇" width="230px;" height="115px;"/>')
               break;
             case '雪一時曇':
-              document.write('<img src="/static/img/雪時々曇.png" alt="雪一時曇" title="雪一時曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪時々曇.png" alt="雪一時曇" title="雪一時曇" width="230px;" height="115px;"/>')
               break;
             case '雪時々曇':
-              document.write('<img src="/static/img/雪時々曇.png" alt="雪時々曇" title="雪時々曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪時々曇.png" alt="雪時々曇" title="雪時々曇" width="230px;" height="115px;"/>')
               break;
             case '雪のち雨':
-              document.write('<img src="/static/img/雪のち雨.png" alt="雪のち雨" title="雪のち雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪のち雨.png" alt="雪のち雨" title="雪のち雨" width="230px;" height="115px;"/>')
               break;
             case '雪一時雨':
-              document.write('<img src="/static/img/雪時々雨.png" alt="雪一時雨" title="雪一時雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪時々雨.png" alt="雪一時雨" title="雪一時雨" width="230px;" height="115px;"/>')
               break;
             case '雪時々雨':
-              document.write('<img src="/static/img/雪時々雨.png" alt="雪時々雨" title="雪時々雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪時々雨.png" alt="雪時々雨" title="雪時々雨" width="230px;" height="115px;"/>')
               break;
             default:
-              document.write('<img src="/static/img/NoImage.png" alt="NoImage" title="NoImage" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/NoImage.png" alt="NoImage" title="NoImage" width="230px;" height="115px;"/>')
               break;
           }
         </script>
@@ -289,133 +290,133 @@
           const tomorrow_weather = "{{ tomorrow.weather }}";
           switch(tomorrow_weather){
             case '晴':
-              document.write('<img src="/static/img/晴.png" alt="晴れ" title="晴れ" id="weather" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴.png" alt="晴れ" title="晴れ" id="weather" width="230px;" height="115px;"/>')
               break;
             case '雨':
-              document.write('<img src="/static/img/雨.png" alt="雨" title="雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨.png" alt="雨" title="雨" width="230px;" height="115px;"/>')
               break;
             case '暴風雨':
-              document.write('<img src="/static/img/暴風雨.png" alt="暴風雨" title="暴風雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/暴風雨.png" alt="暴風雨" title="暴風雨" width="230px;" height="115px;"/>')
               break;
             case '曇':
-              document.write('<img src="/static/img/曇.png" alt="曇" title="曇" id="weather" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇.png" alt="曇" title="曇" id="weather" width="230px;" height="115px;"/>')
               break;
             case '雪':
-              document.write('<img src="/static/img/雪.png" alt="雪" title="雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪.png" alt="雪" title="雪" width="230px;" height="115px;"/>')
               break;
             case '暴風雪':
-              document.write('<img src="/static/img/暴風雪.png" alt="暴風雪" title="暴風雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/暴風雪.png" alt="暴風雪" title="暴風雪" width="230px;" height="115px;"/>')
               break;
             case '晴のち雨':
-              document.write('<img src="/static/img/晴のち雨.png" alt="晴のち雨" title="晴のち雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴のち雨.png" alt="晴のち雨" title="晴のち雨" width="230px;" height="115px;"/>')
               break;
             case '晴一時雨':
-              document.write('<img src="/static/img/晴時々雨.png" alt="晴一時雨" title="晴一時雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴時々雨.png" alt="晴一時雨" title="晴一時雨" width="230px;" height="115px;"/>')
               break;
             case '晴時々雨':
-              document.write('<img src="/static/img/晴時々雨.png" alt="晴時々雨" title="晴時々雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴時々雨.png" alt="晴時々雨" title="晴時々雨" width="230px;" height="115px;"/>')
               break;
             case '晴のち曇':
-              document.write('<img src="/static/img/晴のち曇.png" alt="晴のち曇" title="晴のち曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴のち曇.png" alt="晴のち曇" title="晴のち曇" width="230px;" height="115px;"/>')
               break;
             case '晴一時曇':
-              document.write('<img src="/static/img/晴時々曇.png" alt="晴一時曇" title="晴一時曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴時々曇.png" alt="晴一時曇" title="晴一時曇" width="230px;" height="115px;"/>')
               break;
             case '晴時々曇':
-              document.write('<img src="/static/img/晴時々曇.png" alt="晴時々曇" title="晴時々曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴時々曇.png" alt="晴時々曇" title="晴時々曇" width="230px;" height="115px;"/>')
               break;
             case '晴のち雪':
-              document.write('<img src="/static/img/晴のち雪.png" alt="晴のち雪" title="晴のち雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴のち雪.png" alt="晴のち雪" title="晴のち雪" width="230px;" height="115px;"/>')
               break;
             case '晴一時雪':
-              document.write('<img src="/static/img/晴時々雪.png" alt="晴一時雪" title="晴一時雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴時々雪.png" alt="晴一時雪" title="晴一時雪" width="230px;" height="115px;"/>')
               break;
             case '晴時々雪':
-              document.write('<img src="/static/img/晴時々雪.png" alt="晴時々雪" title="晴時々雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/晴時々雪.png" alt="晴時々雪" title="晴時々雪" width="230px;" height="115px;"/>')
               break;
             case '曇のち雨':
-              document.write('<img src="/static/img/曇のち雨.png" alt="曇のち雨" title="曇のち雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇のち雨.png" alt="曇のち雨" title="曇のち雨" width="230px;" height="115px;"/>')
               break;
             case '曇一時雨':
-              document.write('<img src="/static/img/曇時々雨.png" alt="曇一時雨" title="曇一時雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇時々雨.png" alt="曇一時雨" title="曇一時雨" width="230px;" height="115px;"/>')
               break;
             case '曇時々雨':
-              document.write('<img src="/static/img/曇時々雨.png" alt="曇時々雨" title="曇時々雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇時々雨.png" alt="曇時々雨" title="曇時々雨" width="230px;" height="115px;"/>')
               break;
             case '曇のち晴':
-              document.write('<img src="/static/img/曇のち晴.png" alt="曇のち晴" title="雲のち晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇のち晴.png" alt="曇のち晴" title="雲のち晴" width="230px;" height="115px;"/>')
               break;
             case '曇一時晴':
-              document.write('<img src="/static/img/曇時々晴.png" alt="曇一時晴" title="曇一時晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇時々晴.png" alt="曇一時晴" title="曇一時晴" width="230px;" height="115px;"/>')
               break;
             case '曇時々晴':
-              document.write('<img src="/static/img/曇時々晴.png" alt="曇時々晴" title="曇時々晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇時々晴.png" alt="曇時々晴" title="曇時々晴" width="230px;" height="115px;"/>')
               break;
             case '曇のち雪':
-              document.write('<img src="/static/img/曇のち雪.png" alt="曇のち雪" title="曇のち雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇のち雪.png" alt="曇のち雪" title="曇のち雪" width="230px;" height="115px;"/>')
               break;
             case '曇一時雪':
-              document.write('<img src="/static/img/曇時々雪.png" alt="曇一時雪" title="曇一時雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇時々雪.png" alt="曇一時雪" title="曇一時雪" width="230px;" height="115px;"/>')
               break;
             case '曇時々雪':
-              document.write('<img src="/static/img/曇時々雪.png" alt="曇時々雪" title="曇時々雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/曇時々雪.png" alt="曇時々雪" title="曇時々雪" width="230px;" height="115px;"/>')
               break;
             case '雨のち晴':
-              document.write('<img src="/static/img/雨のち晴.png" alt="雨のち晴" title="雨のち晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨のち晴.png" alt="雨のち晴" title="雨のち晴" width="230px;" height="115px;"/>')
               break;
             case '雨一時晴':
-              document.write('<img src="/static/img/雨時々晴.png" alt="雨一時晴" title="雨一時晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨時々晴.png" alt="雨一時晴" title="雨一時晴" width="230px;" height="115px;"/>')
               break;
             case '雨時々晴':
-              document.write('<img src="/static/img/雨時々晴.png" alt="雨時々晴" title="雨時々晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨時々晴.png" alt="雨時々晴" title="雨時々晴" width="230px;" height="115px;"/>')
               break;
             case '雨のち曇':
-              document.write('<img src="/static/img/雨のち曇.png" alt="雨のち曇" title="雨のち曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨のち曇.png" alt="雨のち曇" title="雨のち曇" width="230px;" height="115px;"/>')
               break;
             case '雨一時曇':
-              document.write('<img src="/static/img/雨時々曇.png" alt="雨一時曇" title="雨一時曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨時々曇.png" alt="雨一時曇" title="雨一時曇" width="230px;" height="115px;"/>')
               break;
             case '雨時々曇':
-              document.write('<img src="/static/img/雨時々曇.png" alt="雨時々曇" title="雨時々曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨時々曇.png" alt="雨時々曇" title="雨時々曇" width="230px;" height="115px;"/>')
               break;
             case '雨のち雪':
-              document.write('<img src="/static/img/雨のち雪.png" alt="雨のち雪" title="雨のち雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨のち雪.png" alt="雨のち雪" title="雨のち雪" width="230px;" height="115px;"/>')
               break;
             case '雨一時雪':
-              document.write('<img src="/static/img/雨時々雪.png" alt="雨一時雪" title="雨一時雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨時々雪.png" alt="雨一時雪" title="雨一時雪" width="230px;" height="115px;"/>')
               break;
             case '雨時々雪':
-              document.write('<img src="/static/img/雨時々雪.png" alt="雨時々雪" title="雨時々雪" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雨時々雪.png" alt="雨時々雪" title="雨時々雪" width="230px;" height="115px;"/>')
               break;
             case '雪のち晴':
-              document.write('<img src="/static/img/雪のち晴.png" alt="雪のち晴" title="雪のち晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪のち晴.png" alt="雪のち晴" title="雪のち晴" width="230px;" height="115px;"/>')
               break;
             case '雪一時晴':
-              document.write('<img src="/static/img/雪時々晴.png" alt="雪一時晴" title="雪一時晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪時々晴.png" alt="雪一時晴" title="雪一時晴" width="230px;" height="115px;"/>')
               break;
             case '雪時々晴':
-              document.write('<img src="/static/img/雪時々晴.png" alt="雪時々晴" title="雪時々晴" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪時々晴.png" alt="雪時々晴" title="雪時々晴" width="230px;" height="115px;"/>')
               break;
             case '雪のち曇':
-              document.write('<img src="/static/img/雪のち曇.png" alt="雪のち曇" title="雪のち曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪のち曇.png" alt="雪のち曇" title="雪のち曇" width="230px;" height="115px;"/>')
               break;
             case '雪一時曇':
-              document.write('<img src="/static/img/雪時々曇.png" alt="雪一時曇" title="雪一時曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪時々曇.png" alt="雪一時曇" title="雪一時曇" width="230px;" height="115px;"/>')
               break;
             case '雪時々曇':
-              document.write('<img src="/static/img/雪時々曇.png" alt="雪時々曇" title="雪時々曇" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪時々曇.png" alt="雪時々曇" title="雪時々曇" width="230px;" height="115px;"/>')
               break;
             case '雪のち雨':
-              document.write('<img src="/static/img/雪のち雨.png" alt="雪のち雨" title="雪のち雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪のち雨.png" alt="雪のち雨" title="雪のち雨" width="230px;" height="115px;"/>')
               break;
             case '雪一時雨':
-              document.write('<img src="/static/img/雪時々雨.png" alt="雪一時雨" title="雪一時雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪時々雨.png" alt="雪一時雨" title="雪一時雨" width="230px;" height="115px;"/>')
               break;
             case '雪時々雨':
-              document.write('<img src="/static/img/雪時々雨.png" alt="雪時々雨" title="雪時々雨" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/雪時々雨.png" alt="雪時々雨" title="雪時々雨" width="230px;" height="115px;"/>')
               break;
             default:
-              document.write('<img src="/static/img/NoImage.png" alt="NoImage" title="NoImage" width="100%;" height="100%;"/>')
+              document.write('<img src="/static/img/NoImage.png" alt="NoImage" title="NoImage" width="230px;" height="115px;"/>')
               break;
           }
         </script>
@@ -429,7 +430,7 @@
       <table>
         <tr>
           <th class="details_title">最高気温</th>
-          <td style="color:red;">{{ values.temp_max }} {{ values.temp_max_diff }}</td>
+          <td style="color:rgb(255, 68, 0);">{{ values.temp_max }} {{ values.temp_max_diff }}</td>
         </tr>
         <tr>
           <th class="details_title">最低気温</th>
@@ -471,7 +472,7 @@
       <table>
         <tr>
           <th class="details_title">最高気温</th>
-          <td style="color:red;">{{ tomorrow.temp_max }} {{ tomorrow.temp_max_diff }}</td>
+          <td style="color:rgb(255, 68, 0);">{{ tomorrow.temp_max }} {{ tomorrow.temp_max_diff }}</td>
         </tr>
         <tr>
           <th class="details_title">最低気温</th>
@@ -514,7 +515,7 @@
     <table class="now_weather">
       <tr>
         <th class="details_title">気温</th>
-        <td style="color: red;">{{ values.now_temp }}</td>
+        <td style="color: rgb(255, 68, 0);">{{ values.now_temp }}</td>
       </tr>
     </table>
     <table class="now_weather">
@@ -526,7 +527,7 @@
     <table class="now_weather">
       <tr>
         <th class="details_title">降水量</th>
-        <td style="color: blue;">{{ values.now_precip }}</td>
+        <td style="color: rgb(10, 170, 238);">{{ values.now_precip }}</td>
       </tr>
     </table>
     <table class="now_weather">
