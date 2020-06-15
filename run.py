@@ -34,13 +34,13 @@ def web():
     temp_min = temp[2].span.string #最低気温
     temp_min_diff = temp[3].string #最低気温の前日比
 
-#今日の気温・降水量ランキング
-    rank = bsObj.find(class_="common-amedas-ranking-parts")
-    rank = rank.find(class_="common-amedas-ranking-temp common-amedas-ranking-box")
-    rank = rank.find(class_="ranking").text
-    precip_rank = bsObj.find(class_="common-amedas-ranking-parts")
-    precip_rank = precip_rank.find(class_="common-amedas-ranking-precip common-amedas-ranking-box")
-    precip_rank = precip_rank.find(class_="ranking").text
+# #今日の気温・降水量ランキング
+#     rank = bsObj.find(class_="common-amedas-ranking-parts")
+#     rank = rank.find(class_="common-amedas-ranking-temp common-amedas-ranking-box")
+#     rank = rank.find(class_="ranking").text
+#     precip_rank = bsObj.find(class_="common-amedas-ranking-parts")
+#     precip_rank = precip_rank.find(class_="common-amedas-ranking-precip common-amedas-ranking-box")
+#     precip_rank = precip_rank.find(class_="ranking").text
 
 #今日の降水確率の取得
     precip = bsObj.find(class_="precip-table")
@@ -50,11 +50,11 @@ def web():
     precip_noon = precip[2].text #12-18
     precip_afternoon = precip[3].text #18-24
 
-#今日の降水量の取得
-    amedas = bsObj.find(class_="common-amedas-ranking-parts")
-    fall = amedas.find(class_="common-amedas-ranking-precip common-amedas-ranking-box").find_all('li')
-    precip_amount = fall[0].text
-    precip_amount = precip_amount.strip("降水量")
+# #今日の降水量の取得
+#     amedas = bsObj.find(class_="common-amedas-ranking-parts")
+#     fall = amedas.find(class_="common-amedas-ranking-precip common-amedas-ranking-box").find_all('li')
+#     precip_amount = fall[0].text
+#     precip_amount = precip_amount.strip("降水量")
 
 #風向きの取得
     wind = bsObj.find(class_="precip-table")
@@ -148,39 +148,41 @@ def web():
     warning_city = {'toyama': alert[0], 'hunahasi': alert[1], 'kamichi': alert[2], 'tateyama': alert[3], 'uodu': alert[4], 'namerikawa': alert[5], 'kurobe': alert[6], 'nyuzen': alert[7], 'asahi': alert[8], 'takaoka': alert[9], 'himi': alert[10], 'oyabe': alert[11], 'imizu': alert[12], 'tonami': alert[13], 'nanto': alert[14]}
     icon = '/static/img/晴.png'
     icon = {'icon': icon}
-    precip_amount = {'precip_amount': precip_amount}
-    rank = {'rank': rank}
-    precip_rank = {'precip_rank': precip_rank}
+    #precip_amount = {'precip_amount': precip_amount}
+    #rank = {'rank': rank}
+    #precip_rank = {'precip_rank': precip_rank}
 
 #index.htmlに現在時刻を送るが、表示はしていない(サイネージのスライドだとズレが生じる)　日付だけだといいかも？
     now = datetime.datetime.now()
     now = "{0:%Y/%m/%d  %H:%M:%S}".format(now)
     now = {"now": now}
 
-    return render_template('index.html', icon = icon, values = values, precip = precip, wind = wind, tomorrow = tomorrow, tomorrow_precip = tomorrow_precip, tomorrow_wind = tomorrow_wind, warning = warning, warning_city = warning_city, precip_amount = precip_amount, rank = rank, precip_rank = precip_rank, now = now)
+    return render_template('index.html', icon = icon, values = values, precip = precip, wind = wind, tomorrow = tomorrow, tomorrow_precip = tomorrow_precip, tomorrow_wind = tomorrow_wind, warning = warning, warning_city = warning_city, now = now)
+    #precip_amount = precip_amount, rank = rank, precip_rank = precip_rank,
 
-@app.route('/alertmap')
-def map():
-#災害情報の取得
-    city = []
-    #alert = []
-    warnurl = 'https://tenki.jp/bousai/warn/4/19/'
-    r = requests.get(warnurl)
-    bsObj = BeautifulSoup(r.content, "html.parser")
-    main = bsObj.find(class_="main-column")
-    cityname = main.find_all("th", class_="map-warn-point")
-    alertname = main.find_all('p', class_='warn-kind-entries')
-    alert_toyama_prefecture = main.find("div", class_="map-warn-pref-entries").find_all("p")
-    alert_toyama_prefecture = alert_toyama_prefecture[0].text
+# @app.route('/alertmap')
+# def map():
+# #災害情報の取得
+#     city = []
+#     #alert = []
+#     warnurl = 'https://tenki.jp/bousai/warn/4/19/'
+#     r = requests.get(warnurl)
+#     bsObj = BeautifulSoup(r.content, "html.parser")
+#     main = bsObj.find(class_="main-column")
+#     cityname = main.find_all("th", class_="map-warn-point")
+#     alertname = main.find_all('p', class_='warn-kind-entries')
+#     alert_toyama_prefecture = main.find("div", class_="map-warn-pref-entries").find_all("p")
+#     alert_toyama_prefecture = alert_toyama_prefecture[0].text
+#
+# #alertmap.htmlに送る変数の定義
+#     warning_city = {'toyama': alert[0], 'hunahasi': alert[1], 'kamichi': alert[2], 'tateyama': alert[3], 'uodu': alert[4], 'namerikawa': alert[5], 'kurobe': alert[6], 'nyuzen': alert[7], 'asahi': alert[8], 'takaoka': alert[9], 'himi': alert[10], 'oyabe': alert[11], 'imizu': alert[12], 'tonami': alert[13], 'nanto': alert[14]}
+#     return render_template('alertmap.html', warning_city = warning_city)
 
-#alertmap.htmlに送る変数の定義
-    warning_city = {'toyama': alert[0], 'hunahasi': alert[1], 'kamichi': alert[2], 'tateyama': alert[3], 'uodu': alert[4], 'namerikawa': alert[5], 'kurobe': alert[6], 'nyuzen': alert[7], 'asahi': alert[8], 'takaoka': alert[9], 'himi': alert[10], 'oyabe': alert[11], 'imizu': alert[12], 'tonami': alert[13], 'nanto': alert[14]}
-    return render_template('alertmap.html', warning_city = warning_city)
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port=5000)
-    schedule.every(5).minute.do(web)
-
+    #schedule.every(5).minute.do(web)
+    web()
 
 
     # im = Image.open('C:/Python/weather/晴れ.jpg')
