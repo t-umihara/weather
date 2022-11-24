@@ -1,0 +1,47 @@
+Nov 24 09:17:50 AM  ==> Cloning from https://github.com/t-umihara/weather...
+Nov 24 09:17:51 AM  ==> Checking out commit 8b60fef165a94088991f74b5f17cc59ccc8138e9 in branch main
+Nov 24 09:17:54 AM  ==> Downloading cache...
+Nov 24 09:18:05 AM  ==> Using Python version: 3.7.10
+Nov 24 09:18:08 AM  ==> Running build command 'pip install -r requirements.txt'...
+Nov 24 09:18:08 AM  Collecting beautifulsoup4==4.6.1
+Nov 24 09:18:08 AM    Using cached beautifulsoup4-4.6.1-py3-none-any.whl (89 kB)
+Nov 24 09:18:08 AM  Collecting certifi==2018.4.16
+Nov 24 09:18:08 AM    Using cached certifi-2018.4.16-py2.py3-none-any.whl (150 kB)
+Nov 24 09:18:08 AM  Collecting chardet==3.0.4
+Nov 24 09:18:08 AM    Using cached chardet-3.0.4-py2.py3-none-any.whl (133 kB)
+Nov 24 09:18:08 AM  Collecting click==6.7
+Nov 24 09:18:08 AM    Using cached click-6.7-py2.py3-none-any.whl (71 kB)
+Nov 24 09:18:08 AM  Collecting cycler==0.10.0
+Nov 24 09:18:08 AM    Using cached cycler-0.10.0-py2.py3-none-any.whl (6.5 kB)
+Nov 24 09:18:08 AM  Collecting feedparser==5.2.1
+Nov 24 09:18:08 AM    Using cached feedparser-5.2.1.tar.bz2 (192 kB)
+Nov 24 09:18:10 AM  Collecting Flask==1.0.2
+Nov 24 09:18:10 AM    Using cached Flask-1.0.2-py2.py3-none-any.whl (91 kB)
+Nov 24 09:18:10 AM  Collecting gunicorn==20.0.4
+Nov 24 09:18:10 AM    Using cached gunicorn-20.0.4-py2.py3-none-any.whl (77 kB)
+Nov 24 09:18:10 AM  Collecting idna==2.7
+Nov 24 09:18:10 AM    Using cached idna-2.7-py2.py3-none-any.whl (58 kB)
+Nov 24 09:18:10 AM  Collecting itsdangerous==0.24
+Nov 24 09:18:10 AM    Using cached itsdangerous-0.24.tar.gz (46 kB)
+Nov 24 09:18:10 AM  Collecting Jinja2==2.10
+Nov 24 09:18:10 AM    Using cached Jinja2-2.10-py2.py3-none-any.whl (126 kB)
+Nov 24 09:18:11 AM  Collecting kiwisolver==1.0.1
+Nov 24 09:18:11 AM    Using cached kiwisolver-1.0.1-cp37-cp37m-manylinux1_x86_64.whl (89 kB)
+Nov 24 09:18:11 AM  Collecting MarkupSafe==1.0
+Nov 24 09:18:11 AM    Using cached MarkupSafe-1.0.tar.gz (14 kB)
+Nov 24 09:18:11 AM      ERROR: Command errored out with exit status 1:
+Nov 24 09:18:11 AM       command: /opt/render/project/src/.venv/bin/python -c 'import sys, setuptools, tokenize; sys.argv[0] = '"'"'/tmp/pip-install-ju531y1i/MarkupSafe/setup.py'"'"'; __file__='"'"'/tmp/pip-install-ju531y1i/MarkupSafe/setup.py'"'"';f=getattr(tokenize, '"'"'open'"'"', open)(__file__);code=f.read().replace('"'"'\r\n'"'"', '"'"'\n'"'"');f.close();exec(compile(code, __file__, '"'"'exec'"'"'))' egg_info --egg-base /tmp/pip-pip-egg-info-5jijz31r
+Nov 24 09:18:11 AM           cwd: /tmp/pip-install-ju531y1i/MarkupSafe/
+Nov 24 09:18:11 AM      Complete output (5 lines):
+Nov 24 09:18:11 AM      Traceback (most recent call last):
+Nov 24 09:18:11 AM        File "<string>", line 1, in <module>
+Nov 24 09:18:11 AM        File "/tmp/pip-install-ju531y1i/MarkupSafe/setup.py", line 6, in <module>
+Nov 24 09:18:11 AM          from setuptools import setup, Extension, Feature
+Nov 24 09:18:11 AM      ImportError: cannot import name 'Feature' from 'setuptools' (/opt/render/project/src/.venv/lib/python3.7/site-packages/setuptools/__init__.py)
+Nov 24 09:18:11 AM      ----------------------------------------
+Nov 24 09:18:11 AM  ERROR: Command errored out with exit status 1: python setup.py egg_info Check the logs for full command output.
+Nov 24 09:18:11 AM  WARNING: You are using pip version 20.1.1; however, version 22.3.1 is available.
+Nov 24 09:18:11 AM  You should consider upgrading via the '/opt/render/project/src/.venv/bin/python -m pip install --upgrade pip' command.
+Nov 24 09:18:11 AM  ==> Build failed 😞
+Nov 24 09:18:11 AM  ==> Generating container image from build. This may take a few minutes...
+Nov 24 09:18:03 AM  ==> Transferred 4.7MB in 7s. Extraction took 0s.

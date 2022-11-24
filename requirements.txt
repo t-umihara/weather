@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 beautifulsoup4==4.6.1
 certifi==2018.4.16
 chardet==3.0.4
@@ -28,4 +29,36 @@ tornado==5.0.2
 urllib3==1.23
 virtualenv==16.6.1
 Werkzeug==0.14.1
+=======
+beautifulsoup4==4.6.1
+certifi==2018.4.16
+chardet==3.0.4
+click==6.7
+cycler==0.10.0
+feedparser==5.2.1
+Flask==1.0.2
+gunicorn==20.0.4
+idna==2.7
+itsdangerous==0.24
+Jinja2==2.10
+kiwisolver==1.0.1
+MarkupSafe
+mutagen==1.42.0
+numpy==1.15.0
+Pillow==6.1.0
+protobuf==3.6.1
+pydub==0.23.1
+pygame==1.9.6
+pyparsing==2.2.0
+python-dateutil==2.7.3
+pytz==2018.5
+requests==2.19.0
+schedule==0.5.0
+six==1.11.0
+sqlparse==0.3.0
+tornado==5.0.2
+urllib3==1.23
+virtualenv==16.6.1
+Werkzeug==0.14.1
+>>>>>>> b17fd998c9f7f8f7784ae6a9aeb0df2f177b48c7
 ws4py==0.5.1
