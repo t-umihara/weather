@@ -8,7 +8,6 @@ import time
 import schedule
 import datetime
 from PIL import Image, ImageFilter
-# import cv2
 import numpy as np
 
 
@@ -182,8 +181,3 @@ def web():
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port=5000)
     schedule.every(5).minute.do(web)
-    #web()
-
-
-    # im = Image.open('C:/Python/weather/晴れ.jpg')
-    # print(im.format, im.size, im.mode)
