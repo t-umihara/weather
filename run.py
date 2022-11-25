@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from flask import Flask
 from flask import render_template
 import requests
@@ -367,4 +366,3 @@ def web():
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port=5000)
     schedule.every(5).minute.do(web)
->>>>>>> b17fd998c9f7f8f7784ae6a9aeb0df2f177b48c7
