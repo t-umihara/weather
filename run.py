@@ -2,12 +2,12 @@ from flask import Flask
 from flask import render_template
 import requests
 from bs4 import BeautifulSoup
-from mutagen.mp3 import MP3 as mp3
-import pygame
+#from mutagen.mp3 import MP3 as mp3
+#import pygame
 import time
 import schedule
 import datetime
-from PIL import Image, ImageFilter
+#from PIL import Image, ImageFilter
 import numpy as np
 
 app = Flask(__name__)
@@ -82,7 +82,6 @@ def web():
 
 #災害情報の取得
     city = []
-    #alert = []
     warnurl = 'https://tenki.jp/bousai/warn/4/19/'
     r = requests.get(warnurl)
     bsObj = BeautifulSoup(r.content, "html.parser")
