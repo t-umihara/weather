@@ -181,7 +181,6 @@ def web():
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port=5000)
     schedule.every(5).minute.do(web)
-=======
 from flask import Flask
 from flask import render_template
 import requests
