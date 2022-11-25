@@ -2,12 +2,9 @@ from flask import Flask
 from flask import render_template
 import requests
 from bs4 import BeautifulSoup
-#from mutagen.mp3 import MP3 as mp3
-#import pygame
 import time
 import schedule
 import datetime
-#from PIL import Image, ImageFilter
 import numpy as np
 
 app = Flask(__name__)
