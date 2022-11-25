@@ -10,7 +10,7 @@ idna==2.7
 itsdangerous==0.24
 Jinja2==2.10
 kiwisolver==1.0.1
-MarkupSafe==2.1.0
+MarkupSafe==2.0.1
 mutagen==1.42.0
 numpy==1.15.0
 Pillow==6.1.0
