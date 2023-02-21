@@ -77,24 +77,6 @@ def web():
     now_humidity = main_column.find("td", class_="humidity-entry").text
     now_precip = main_column.find("td", class_="precip-entry").text
 
-#災害情報の取得
-    city = []
-    warnurl = 'https://tenki.jp/bousai/warn/4/19/'
-    r = requests.get(warnurl)
-    bsObj = BeautifulSoup(r.content, "html.parser")
-    main = bsObj.find(class_="main-column")
-    cityname = main.find_all("th", class_="map-warn-point")
-    alertname = main.find_all('p', class_='warn-kind-entries')
-    alert_toyama_prefecture = main.find("div", class_="map-warn-pref-entries").find_all("p")
-    alert_toyama_prefecture = alert_toyama_prefecture[0].text
-
-#各市町村の名前と注意報の取得
-    k = 0
-    for set_city in range(15):
-        city.append(cityname[k].text)
-        alert.append(alertname[k].text)
-        k = k + 1
-
 #index.htmlに送る変数の定義
     values = {"weather": weather, "temp_max": temp_max, "temp_max_diff": temp_max_diff, "temp_min": temp_min, "temp_min_diff": temp_min_diff, "get_time": get_time, 'now_temp': now_temp, 'now_humidity': now_humidity, 'now_precip': now_precip}
     precip = {"precip_earlymorning": precip_earlymorning, "precip_morning": precip_morning, "precip_noon": precip_noon, "precip_afternoon": precip_afternoon}
@@ -102,8 +84,6 @@ def web():
     tomorrow = {"weather": tomorrow_weather, "temp_max": temp_tomorrow_max, "temp_max_diff": temp_tomorrow_max_diff, "temp_min": temp_tomorrow_min, "temp_min_diff": temp_tomorrow_min_diff}
     tomorrow_precip = {"precip_earlymorning_tomorrow": precip_earlymorning_tomorrow, "precip_morning_tomorrow": precip_morning_tomorrow, "precip_noon_tomorrow": precip_noon_tomorrow, "precip_afternoon_tomorrow": precip_afternoon_tomorrow}
     tomorrow_wind = {'wind_tomorrow': wind_tomorrow}
-    warning = {'warning': alert_toyama_prefecture}
-    warning_city = {'toyama': alert[0], 'hunahasi': alert[1], 'kamichi': alert[2], 'tateyama': alert[3], 'uodu': alert[4], 'namerikawa': alert[5], 'kurobe': alert[6], 'nyuzen': alert[7], 'asahi': alert[8], 'takaoka': alert[9], 'himi': alert[10], 'oyabe': alert[11], 'imizu': alert[12], 'tonami': alert[13], 'nanto': alert[14]}
     icon = '/static/img/晴.png'
     icon = {'icon': icon}
 
@@ -112,8 +92,8 @@ def web():
     now = "{0:%Y/%m/%d  %H:%M:%S}".format(now)
     now = {"now": now}
 
-    return render_template('index.html', icon = icon, values = values, precip = precip, wind = wind, tomorrow = tomorrow, tomorrow_precip = tomorrow_precip, tomorrow_wind = tomorrow_wind, warning = warning, warning_city = warning_city, now = now)
-    
+    return render_template('index.html', icon = icon, values = values, precip = precip, wind = wind, tomorrow = tomorrow, tomorrow_precip = tomorrow_precip, tomorrow_wind = tomorrow_wind, now = now)
+
 @app.route('/honsya')
 def honsya():
     #HTML解析
@@ -181,41 +161,21 @@ def honsya():
     now_humidity = main_column.find("td", class_="humidity-entry").text
     now_precip = main_column.find("td", class_="precip-entry").text
 
-#災害情報の取得
-    city = []
-    warnurl = 'https://tenki.jp/bousai/warn/4/19/'
-    r = requests.get(warnurl)
-    bsObj = BeautifulSoup(r.content, "html.parser")
-    main = bsObj.find(class_="main-column")
-    cityname = main.find_all("th", class_="map-warn-point")
-    alertname = main.find_all('p', class_='warn-kind-entries')
-    alert_toyama_prefecture = main.find("div", class_="map-warn-pref-entries").find_all("p")
-    alert_toyama_prefecture = alert_toyama_prefecture[0].text
-
-#各市町村の名前と注意報の取得
-    k = 0
-    for set_city in range(15):
-        city.append(cityname[k].text)
-        alert.append(alertname[k].text)
-        k = k + 1
-
-#index.htmlに送る変数の定義
+#honsya.htmlに送る変数の定義
     values = {"weather": weather, "temp_max": temp_max, "temp_max_diff": temp_max_diff, "temp_min": temp_min, "temp_min_diff": temp_min_diff, "get_time": get_time, 'now_temp': now_temp, 'now_humidity': now_humidity, 'now_precip': now_precip}
     precip = {"precip_earlymorning": precip_earlymorning, "precip_morning": precip_morning, "precip_noon": precip_noon, "precip_afternoon": precip_afternoon}
     wind = {'wind': wind}
     tomorrow = {"weather": tomorrow_weather, "temp_max": temp_tomorrow_max, "temp_max_diff": temp_tomorrow_max_diff, "temp_min": temp_tomorrow_min, "temp_min_diff": temp_tomorrow_min_diff}
     tomorrow_precip = {"precip_earlymorning_tomorrow": precip_earlymorning_tomorrow, "precip_morning_tomorrow": precip_morning_tomorrow, "precip_noon_tomorrow": precip_noon_tomorrow, "precip_afternoon_tomorrow": precip_afternoon_tomorrow}
     tomorrow_wind = {'wind_tomorrow': wind_tomorrow}
-    warning = {'warning': alert_toyama_prefecture}
-    warning_city = {'toyama': alert[0], 'hunahasi': alert[1], 'kamichi': alert[2], 'tateyama': alert[3], 'uodu': alert[4], 'namerikawa': alert[5], 'kurobe': alert[6], 'nyuzen': alert[7], 'asahi': alert[8], 'takaoka': alert[9], 'himi': alert[10], 'oyabe': alert[11], 'imizu': alert[12], 'tonami': alert[13], 'nanto': alert[14]}
     icon = '/static/img/晴.png'
     icon = {'icon': icon}
 
-#index.htmlに現在時刻を送るが、表示はしていない(サイネージのスライドだとズレが生じる)　日付だけだといいかも？
+#honsya.htmlに現在時刻を送るが、表示はしていない(サイネージのスライドだとズレが生じる)　日付だけだといいかも？
     now = datetime.datetime.now()
     now = "{0:%Y/%m/%d  %H:%M:%S}".format(now)
     now = {"now": now}
-    return render_template('honsya.html', icon = icon, values = values, precip = precip, wind = wind, tomorrow = tomorrow, tomorrow_precip = tomorrow_precip, tomorrow_wind = tomorrow_wind, warning = warning, warning_city = warning_city, now = now)
+    return render_template('honsya.html', icon = icon, values = values, precip = precip, wind = wind, tomorrow = tomorrow, tomorrow_precip = tomorrow_precip, tomorrow_wind = tomorrow_wind, now = now)
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port=5000)

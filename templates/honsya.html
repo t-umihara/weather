@@ -62,7 +62,7 @@
         font-size: 250% / 4;
         display: inline;
         float: right;
-        margin-right: 17%;
+        margin-right: 34%;
       }
       .today_weather_icon{
         margin-left: 5%;
@@ -71,9 +71,11 @@
         clear: both;
       }
       .tomorrow_weather_icon{
+        margin-right: 30%;
+        margin-top: -7.5%;
         display: inline;
         float: right;
-        margin-right: 15%;
+        clear: both;
       }
       .today-header{
         margin-left: 10% / 2;
@@ -87,45 +89,24 @@
         font-weight: bold;
       }
       .maxmin{
-        display: inline-block;
-        float: left;
-        /* width: 310px; */
-        clear: both;
-        margin-left: 8% / 2;
+        display:inline-block;
+        position:absolute;
+        margin-left:4%;
       }
       .tomorrow_maxmin{
-        display: inline-block;
-        float: left;
-        margin-left: 15%;
-      }
-      .now_weather{
-        display: inline-block;
-        float: left;
-        font-size: 95%
+        display:inline-block;
+        position:absolute;
+        margin-left: 54%;
       }
       .rain{
         display: inline-block;
-        float: left;
-        margin-left: 2% / 2;
-      }
-      .warning{
-        font-size: 90%;
-        text-align: center;
-        font-weight: bold;
-        clear: both;
+        position:absolute;
+        margin-left: 15%;
       }
       .tomorrow_rain{
         display: inline-block;
-        float: left;
-        margin-left: 2% / 2;
-        margin-right: 0%;
-      }
-      .warning_content{
-        color: red;
-        font-size: 125%;
-        text-align: center;
-        font-weight: bold;
-        margin-left: 240% / 2;
+        position:absolute;
+        margin-left: 65.5%
       }
       td {
         font-weight: bold;
@@ -428,10 +409,6 @@
           <th class="details_title">最低気温</th>
           <td style="color:blue;">{{ values.temp_min }} {{ values.temp_min_diff }}</td>
         </tr>
-        <!-- <tr>
-          <th class="details_title">風向き</th>
-          <td>{{ wind.wind }}</td>
-        </tr> -->
       </table>
     </div>
 
@@ -470,10 +447,6 @@
           <th class="details_title">最低気温</th>
           <td style="color:blue;">{{ tomorrow.temp_min }} {{ tomorrow.temp_min_diff }}</td>
         </tr>
-        <!-- <tr>
-        <th class="details_title">風向き</th>
-        <td>{{ tomorrow_wind.wind_tomorrow }}</td>
-        </tr> -->
       </table>
     </div>
 
@@ -500,36 +473,5 @@
       </table>
     </div>
   </div>
-
-<div class="table">
-  <div class="now_weather">
-    <div class="now_header">{{ values.get_time }}</div>
-    <table class="now_weather">
-      <tr>
-        <th class="details_title">気温</th>
-        <td style="color: rgb(255, 68, 0);">{{ values.now_temp }}</td>
-      </tr>
-    </table>
-    <table class="now_weather">
-      <tr>
-        <th class="details_title">湿度</th>
-        <td style="color: blue;">{{ values.now_humidity }}</td>
-      </tr>
-    </table>
-    <table class="now_weather">
-      <tr>
-        <th class="details_title">降水量</th>
-        <td style="color: rgb(10, 170, 238);">{{ values.now_precip }}</td>
-      </tr>
-    </table>
-    <table class="now_weather">
-      <tr>
-        <th class="details_title">警報</th>
-        <td style="color:red">{{ warning.warning }}</td>
-      </tr>
-    </table>
-  </div>
-</div>
-
 </body>
 </html>
