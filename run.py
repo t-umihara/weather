@@ -77,8 +77,6 @@ def web():
     now_humidity = main_column.find("td", class_="humidity-entry").text
     now_precip = main_column.find("td", class_="precip-entry").text
 
-<<<<<<< HEAD
-=======
 #災害情報の取得
     city = []
     warnurl = 'https://tenki.jp/bousai/warn/4/19/'
@@ -97,7 +95,6 @@ def web():
         alert.append(alertname[k].text)
         k = k + 1
 
->>>>>>> 88ea94c5665cfbef9fda9125d0a66e4229b1a8c4
 #index.htmlに送る変数の定義
     values = {"weather": weather, "temp_max": temp_max, "temp_max_diff": temp_max_diff, "temp_min": temp_min, "temp_min_diff": temp_min_diff, "get_time": get_time, 'now_temp': now_temp, 'now_humidity': now_humidity, 'now_precip': now_precip}
     precip = {"precip_earlymorning": precip_earlymorning, "precip_morning": precip_morning, "precip_noon": precip_noon, "precip_afternoon": precip_afternoon}
@@ -113,7 +110,6 @@ def web():
     now = "{0:%Y/%m/%d  %H:%M:%S}".format(now)
     now = {"now": now}
 
-<<<<<<< HEAD
     return render_template('index.html', icon = icon, values = values, precip = precip, wind = wind, tomorrow = tomorrow, tomorrow_precip = tomorrow_precip, tomorrow_wind = tomorrow_wind, now = now)
 
 @app.route('/honsya')
@@ -201,11 +197,4 @@ def honsya():
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port=5000)
-    schedule.every(10).minute.do(web)
-=======
-    return render_template('index.html', icon = icon, values = values, precip = precip, wind = wind, tomorrow = tomorrow, tomorrow_precip = tomorrow_precip, tomorrow_wind = tomorrow_wind, warning = warning, warning_city = warning_city, now = now)
-
-if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=5000)
     schedule.every(5).minute.do(web)
->>>>>>> 88ea94c5665cfbef9fda9125d0a66e4229b1a8c4
