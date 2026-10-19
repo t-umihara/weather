@@ -8,6 +8,10 @@
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; color: #18332b; background: #fff; font-family: "Yu Gothic", "Meiryo", sans-serif; }
+    /* JSで実際の表示領域に全体を収める。高さ不足でも下部を切り捨てない。 */
+    .screen { transform-origin: top left; display: flow-root; }
+    html.fit-enabled, html.fit-enabled body { width: 100%; height: 100%; overflow: hidden; }
+    html.fit-enabled .screen { position: absolute; top: 0; }
     .page-header { background: seagreen; color: white; padding: 12px 24px; text-align: center; }
     .page-header h1 { margin: 0; font-size: clamp(22px, 2.2vw, 36px); }
     main { max-width: 1600px; margin: auto; padding: 16px 28px; }
@@ -37,9 +41,32 @@
     footer p { margin: 4px 0; } footer a { color: #226447; }
     @media (max-width: 850px) { .details { grid-template-columns: 1fr; } }
     @media (max-width: 560px) { main { padding: 12px; } .forecast-grid { grid-template-columns: 1fr; gap: 16px; } }
+    @media (max-height: 600px) {
+      .page-header { padding: 5px 16px; }
+      .page-header h1 { font-size: 22px; }
+      main { padding: 8px 16px; }
+      .status { margin-bottom: 8px; font-size: 12px; }
+      .status.warning { padding: 5px 8px; }
+      .forecast-grid { gap: 16px; }
+      .forecast-card { padding: 10px 14px; }
+      h2 { font-size: 24px; }
+      .weather { min-height: 56px; gap: 10px; font-size: 22px; }
+      .weather img { width: 56px; height: 56px; }
+      .weather p { margin: 4px 0; }
+      .details { gap: 12px; }
+      table { font-size: 18px; }
+      th, td { padding: 4px 0; }
+      .current { margin-top: 8px; padding: 7px 12px; }
+      .current h2 { font-size: 16px; }
+      .current dl { gap: 8px 30px; margin-top: 5px; }
+      .current dd { font-size: 22px; }
+      footer { margin-top: 8px; font-size: 12px; line-height: 1.5; }
+      footer p { margin: 2px 0; }
+    }
   </style>
 </head>
 <body>
+<div class="screen" id="weather-screen">
 {% block header %}
   <header class="page-header"><h1>{{ location_label }}の天気予報</h1></header>
 {% endblock %}
@@ -87,7 +114,50 @@
 {% endblock %}
     <footer>
       <p>天気情報提供：<a href="https://www.weatherapi.com/" target="_blank" rel="noopener noreferrer">WeatherAPI.com</a></p>
+      <p>雨・雪の確率は、各6時間内の時間別予報にある雨・雪それぞれの確率の最大値です。6時間全体の降水確率ではありません。「—」は未取得の項目です。</p>
+      <p>天気情報は参考情報です。予報・現在情報には不確実性があり、地点や時刻によって実際の天気と異なる場合があります。安全・防災・航空・船舶などの判断では本情報だけに依存せず、気象庁などの公的機関の最新情報をご確認ください。</p>
     </footer>
   </main>
+</div>
+<script>
+  (function () {
+    'use strict';
+    var screen = document.getElementById('weather-screen');
+    var pending = false;
+    function fitScreen() {
+      pending = false;
+      var viewport = window.visualViewport;
+      var width = Math.floor(viewport ? viewport.width : window.innerWidth);
+      var height = Math.floor(viewport ? viewport.height : window.innerHeight);
+      if (!width || !height) return;
+      // 元のレイアウトの幅・高さを測定してから縮小する。毎回の累積縮小を防ぐ。
+      screen.style.width = width + 'px';
+      screen.style.transform = 'none';
+      screen.style.left = '0px';
+      var naturalWidth = Math.max(width, screen.scrollWidth);
+      var naturalHeight = Math.max(screen.offsetHeight, screen.scrollHeight);
+      // 端数の丸めで下端が切れないように2pxの余裕を残す。
+      var scale = Math.min(1, (width - 2) / naturalWidth, (height - 2) / naturalHeight);
+      screen.style.transform = 'scale(' + scale + ')';
+      screen.style.left = Math.max(0, (width - naturalWidth * scale) / 2) + 'px';
+      document.documentElement.classList.add('fit-enabled');
+    }
+    function scheduleFit() {
+      if (!pending) {
+        pending = true;
+        window.requestAnimationFrame(fitScreen);
+      }
+    }
+    window.addEventListener('resize', scheduleFit);
+    window.addEventListener('load', scheduleFit);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', scheduleFit);
+    // アイコンやフォントの読み込みで高さが変わった場合も再計算する。
+    screen.addEventListener('load', scheduleFit, true);
+    screen.addEventListener('error', scheduleFit, true);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleFit);
+    if (window.ResizeObserver) new ResizeObserver(scheduleFit).observe(screen);
+    scheduleFit();
+  })();
+</script>
 </body>
 </html>
