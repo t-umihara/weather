@@ -63,6 +63,32 @@
       footer { margin-top: 8px; font-size: 12px; line-height: 1.5; }
       footer p { margin: 2px 0; }
     }
+    /* サイネージ向け：幅の上限を外し、気温と確率の数値を主役にする。 */
+    main { max-width: none; padding: 10px 16px; }
+    .status { margin-bottom: 8px; font-size: clamp(12px, 1vw, 18px); }
+    .forecast-grid { gap: 16px; }
+    .forecast-card { padding: 12px 18px; }
+    h2 { font-size: clamp(26px, 2.3vw, 44px); line-height: 1.25; }
+    .weather { min-height: 68px; font-size: clamp(24px, 2.2vw, 42px); gap: 12px; }
+    .weather img { width: 68px; height: 68px; }
+    .weather p { margin: 4px 0; }
+    .details { display: block; }
+    .temperatures { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 4px 0 12px; }
+    .temperature { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+    .temperature dt { font-size: clamp(16px, 1.25vw, 24px); font-weight: bold; }
+    .temperature dd { margin: 0; font-size: clamp(30px, 2.8vw, 54px); font-weight: bold; line-height: 1.2; }
+    .rain-table { table-layout: fixed; }
+    .rain-table caption { font-size: clamp(13px, 1vw, 18px); padding: 0 0 6px; }
+    .rain-table th { font-size: clamp(14px, 1.2vw, 23px); font-weight: normal; }
+    .rain-table td { font-size: clamp(26px, 2.4vw, 46px); }
+    .rain-table th, .rain-table td { text-align: center; padding: 3px 2px; }
+    footer { margin-top: 8px; font-size: 12px; line-height: 1.5; }
+    footer p { margin: 2px 0; }
+    @media (max-width: 560px) {
+      main { padding: 8px; }
+      .forecast-card { padding: 10px 12px; }
+      .temperatures { gap: 8px; }
+    }
   </style>
 </head>
 <body>
@@ -73,7 +99,7 @@
   <main>
     <div class="status{% if warning %} warning{% endif %}" role="status">
       <p>{{ state }}{% if message %} ／ {{ message }}{% endif %}</p>
-      <p>{{ location_label }} ／ 最終取得：{{ fetched_at }}（日本時間）</p>
+      <p>{{ location_label }} ／ 最終取得：{{ fetched_at }}</p>
     </div>
     <div class="forecast-grid">
     {% for card in cards %}
@@ -84,18 +110,23 @@
           <p>{{ card.weather }}</p>
         </div>
         <div class="details">
-          <table aria-label="{{ card.title }}の気温">
-            <tbody>
-              <tr><th scope="row">最高気温</th><td class="max">{{ card.temp_max }}</td></tr>
-              <tr><th scope="row">最低気温</th><td class="min">{{ card.temp_min }}</td></tr>
-            </tbody>
-          </table>
-          <table aria-label="{{ card.title }}の雨・雪の確率">
+          <dl class="temperatures" aria-label="{{ card.title }}の気温">
+            <div class="temperature"><dt>最高気温</dt><dd class="max">{{ card.temp_max }}</dd></div>
+            <div class="temperature"><dt>最低気温</dt><dd class="min">{{ card.temp_min }}</dd></div>
+          </dl>
+          <table class="rain-table" aria-label="{{ card.title }}の雨・雪の確率">
             <caption>雨・雪の確率（時間別の最大値）</caption>
-            <tbody>
+            <thead><tr>
             {% for slot in card.slots %}
-              <tr><th scope="row">{{ slot.label }}</th><td class="min">{{ slot.value }}</td></tr>
+              <th scope="col">{{ slot.label }}</th>
             {% endfor %}
+            </tr></thead>
+            <tbody>
+              <tr>
+            {% for slot in card.slots %}
+              <td class="min">{{ slot.value }}</td>
+            {% endfor %}
+              </tr>
             </tbody>
           </table>
         </div>
@@ -104,7 +135,7 @@
     </div>
 {% block current %}
     <section class="current" aria-label="現在の天気情報">
-      <h2>現在の天気情報<span class="current-time">データ更新：{{ current.updated }}（日本時間）{% if current.unavailable %} ／ 現在情報は未取得または有効期限切れです{% endif %}</span></h2>
+      <h2>現在の天気情報<span class="current-time">データ更新：{{ current.updated }}{% if current.unavailable %} ／ 現在情報は未取得または有効期限切れです{% endif %}</span></h2>
       <dl>
         <div><dt>気温</dt><dd class="max">{{ current.temp }}</dd></div>
         <div><dt>湿度</dt><dd class="min">{{ current.humidity }}</dd></div>
@@ -128,16 +159,20 @@
       var width = Math.floor(viewport ? viewport.width : window.innerWidth);
       var height = Math.floor(viewport ? viewport.height : window.innerHeight);
       if (!width || !height) return;
-      // 元のレイアウトの幅・高さを測定してから縮小する。毎回の累積縮小を防ぐ。
-      screen.style.width = width + 'px';
+      // 表示幅を確保したまま高さに収まる倍率を探す。
+      // 幅を固定したまま全体を縮めると左右に大きな余白が残るため、
+      // 縮小時はレイアウト幅も広げ、画面の横幅を使い切る。
       screen.style.transform = 'none';
       screen.style.left = '0px';
-      var naturalWidth = Math.max(width, screen.scrollWidth);
-      var naturalHeight = Math.max(screen.offsetHeight, screen.scrollHeight);
-      // 端数の丸めで下端が切れないように2pxの余裕を残す。
-      var scale = Math.min(1, (width - 2) / naturalWidth, (height - 2) / naturalHeight);
+      var scale = 1;
+      for (var pass = 0; pass < 12; pass++) {
+        screen.style.width = (width - 2) / scale + 'px';
+        var naturalHeight = Math.max(screen.offsetHeight, screen.scrollHeight);
+        if (naturalHeight * scale <= height - 2) break;
+        scale *= (height - 2) / (naturalHeight * scale);
+      }
       screen.style.transform = 'scale(' + scale + ')';
-      screen.style.left = Math.max(0, (width - naturalWidth * scale) / 2) + 'px';
+      screen.style.left = '1px';
       document.documentElement.classList.add('fit-enabled');
     }
     function scheduleFit() {
