@@ -1,4 +1,41 @@
-{# 本社向け：従来どおりページ見出し・現在情報を省き、今日と明日の予報を表示。 #}
+{# 本社向け：大見出しのみ省略。予報と現在の気温・湿度・降水量は共通表示。 #}
 {% extends "index.html" %}
 {% block header %}{% endblock %}
-{% block current %}{% endblock %}
+{% block extra_styles %}
+<style>
+  /* 本社サイネージ：表示領域1080×336pxを基準に、現在情報も含めて配置。 */
+  main { padding: 5px 10px; }
+  .status { font-size: 11px; line-height: 1.25; margin-bottom: 4px; gap: 2px 12px; }
+  .status.warning { padding: 3px 6px; }
+  .forecast-grid { gap: 10px; }
+  .forecast-card { padding: 6px 10px; display: grid; grid-template-columns: 0.9fr 1.1fr; align-items: center; }
+  h2 { font-size: 23px; line-height: 1.2; }
+  .date { margin-left: 8px; font-size: 14px; }
+  .weather { min-height: 40px; font-size: 18px; gap: 6px; justify-content: flex-end; }
+  .weather img { width: 38px; height: 38px; }
+  .weather p { margin: 2px 0; line-height: 1.2; }
+  .details { grid-column: 1 / -1; }
+  .temperatures { margin: 2px 0 5px; gap: 12px; }
+  .temperature { gap: 3px 8px; flex-wrap: nowrap; }
+  .temperature dt { font-size: 14px; white-space: nowrap; }
+  .temperature dd { font-size: 36px; line-height: 1.15; white-space: nowrap; }
+  .rain-table caption { font-size: 11px; padding-bottom: 2px; }
+  .rain-table th { font-size: 13px; }
+  .rain-table td { font-size: 28px; line-height: 1.15; }
+  .rain-table th, .rain-table td { padding: 2px; }
+  .current { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 5px; padding: 5px 10px; }
+  .current h2 { font-size: 14px; }
+  .current-time { display: block; font-size: 10px; margin: 2px 0 0; line-height: 1.2; }
+  .current dl { margin: 0; gap: 8px 30px; }
+  .current dl div { gap: 8px; }
+  .current dt { font-size: 13px; }
+  .current dd { font-size: 28px; line-height: 1.15; }
+  footer { margin-top: 4px; font-size: 11px; line-height: 1.25; }
+  footer p { margin: 1px 0; }
+  @media (max-width: 600px) {
+    .forecast-card { grid-template-columns: 1fr; }
+    .weather { justify-content: flex-start; }
+    .current { flex-wrap: wrap; }
+  }
+</style>
+{% endblock %}
