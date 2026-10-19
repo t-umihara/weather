@@ -1,201 +1,257 @@
-#20230313
-from flask import Flask
-from flask import render_template
-import requests
-from bs4 import BeautifulSoup
+"""富山市の受付サイネージ。APIキーは環境変数 WEATHERAPI_KEY に設定する。"""
+
+import datetime as dt
+import math
+import os
+import threading
 import time
-import schedule
-import datetime
-import numpy as np
+from urllib.parse import urlsplit
+
+import requests
+from flask import Flask, make_response, render_template
 
 app = Flask(__name__)
-alert = []
+JST = dt.timezone(dt.timedelta(hours=9))
+API_URL = "https://api.weatherapi.com/v1/forecast.json"
+CACHE_SECONDS = 15 * 60
+MAX_CACHE_SECONDS = 60 * 60  # 現在情報のキャッシュ上限。予報も同時に破棄する。
+RETRY_SECONDS = 60
+PAGE_REFRESH_SECONDS = 5 * 60
 
-@app.route('/')
+
+def jst_now():
+    return dt.datetime.now(JST)
+
+
+class WeatherUnavailable(Exception):
+    pass
+
+
+def as_dict(value):
+    return value if isinstance(value, dict) else {}
+
+
+def number(value):
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        result = float(value)
+        return result if math.isfinite(result) else None
+    except (TypeError, ValueError):
+        return None
+
+
+def display_number(value, unit="", minimum=None, maximum=None):
+    value = number(value)
+    if value is None or (minimum is not None and value < minimum):
+        return "—"
+    if maximum is not None and value > maximum:
+        return "—"
+    return "{:g}{}".format(round(value, 1), unit)
+
+
+def icon_url(value):
+    # APIが提供するアイコンのみ許可。既存のstatic画像は不要。
+    if not isinstance(value, str):
+        return ""
+    url = "https:" + value if value.startswith("//") else value
+    try:
+        parts = urlsplit(url)
+    except ValueError:
+        return ""
+    if parts.scheme == "https" and parts.netloc == "cdn.weatherapi.com":
+        return url
+    return ""
+
+
+def fetch_weather():
+    api_key = os.environ.get("WEATHERAPI_KEY", "").strip()
+    if not api_key:
+        raise WeatherUnavailable("APIキーが未設定です")
+    params = {
+        "key": api_key,
+        "q": os.environ.get("WEATHERAPI_LOCATION", "36.6953,137.2113"),
+        "days": 2,
+        "lang": "ja",
+        "aqi": "no",
+        "alerts": "no",
+    }
+    try:
+        with requests.get(API_URL, params=params, timeout=(3, 8),
+                          allow_redirects=False) as response:
+            if response.status_code != 200:
+                # エラー本文やURLにはAPIキーが含まれ得るため、ログに出さない。
+                app.logger.warning("WeatherAPI HTTP status=%s", response.status_code)
+                raise WeatherUnavailable("天気情報を取得できませんでした")
+            payload = response.json()
+    except requests.RequestException:
+        app.logger.warning("WeatherAPI request failed (URL and key omitted)")
+        raise WeatherUnavailable("天気情報を取得できませんでした") from None
+    except ValueError:
+        raise WeatherUnavailable("天気情報の応答形式を確認できませんでした") from None
+
+    if not isinstance(payload, dict) or payload.get("error"):
+        raise WeatherUnavailable("天気情報の応答形式を確認できませんでした")
+    days = as_dict(payload.get("forecast")).get("forecastday")
+    if not isinstance(days, list) or not days or not all(isinstance(d, dict) for d in days):
+        raise WeatherUnavailable("予報情報を取得できませんでした")
+    # 正常HTTPでも当日の予報がない応答は、新しい正常データとして採用しない。
+    today = jst_now().date().isoformat()
+    if not any(d.get("date") == today and isinstance(d.get("day"), dict) for d in days):
+        raise WeatherUnavailable("当日の予報情報を取得できませんでした")
+    return payload
+
+
+class WeatherCache:
+    """1プロセス内で両URL・複数スレッドが共有する、アクセス時更新キャッシュ。"""
+
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.payload = None
+        self.saved_at = None
+        self.saved_mono = None
+        self.last_attempt = None
+        self.error = ""
+
+    def get(self):
+        with self.lock:
+            now = time.monotonic()
+            # 期限切れのデータは表示しないだけでなく参照も破棄する。
+            if self.saved_mono is not None and now - self.saved_mono >= MAX_CACHE_SECONDS:
+                self.payload = None
+                self.saved_at = None
+                self.saved_mono = None
+            same_date = self.saved_at is not None and self.saved_at.date() == jst_now().date()
+            fresh = (self.payload is not None and same_date and
+                     now - self.saved_mono < CACHE_SECONDS)
+            retry_ready = self.last_attempt is None or now - self.last_attempt >= RETRY_SECONDS
+            if not fresh and retry_ready:
+                self.last_attempt = now
+                try:
+                    payload = fetch_weather()
+                    self.payload = payload
+                    self.saved_at = jst_now()
+                    self.saved_mono = time.monotonic()
+                    self.error = ""
+                except WeatherUnavailable as exc:
+                    self.error = str(exc)
+            stale = self.payload is not None and bool(self.error)
+            return self.payload, self.saved_at, stale, self.error
+
+
+weather_cache = WeatherCache()
+
+
+def rain_slots(forecast, date):
+    """6時間の発生確率は計算できないため、時間別の雨・雪の確率の最大値を表示。"""
+    by_hour = {}
+    hours = forecast.get("hour", [])
+    for item in hours if isinstance(hours, list) else []:
+        item = as_dict(item)
+        try:
+            stamp = dt.datetime.strptime(item.get("time", ""), "%Y-%m-%d %H:%M")
+        except (TypeError, ValueError):
+            continue
+        if stamp.date() == date:
+            by_hour[stamp.hour] = item
+    slots = []
+    for start in (0, 6, 12, 18):
+        probabilities = []
+        for hour in range(start, start + 6):
+            entry = by_hour.get(hour, {})
+            rain = number(entry.get("chance_of_rain"))
+            snow = number(entry.get("chance_of_snow"))
+            if (rain is not None and snow is not None and
+                    0 <= rain <= 100 and 0 <= snow <= 100):
+                probabilities.append(max(rain, snow))
+        # 欠損を0%扱いしない。全6時間がそろった場合だけ表示。
+        value = display_number(max(probabilities), "%") if len(probabilities) == 6 else "—"
+        slots.append({"label": "{}時～{}時".format(start, start + 6), "value": value})
+    return slots
+
+
+def forecast_card(payload, date, title):
+    days = as_dict(as_dict(payload).get("forecast")).get("forecastday", [])
+    forecast = next((as_dict(d) for d in days if as_dict(d).get("date") == date.isoformat()), {})
+    day = as_dict(forecast.get("day"))
+    condition = as_dict(day.get("condition"))
+    return {
+        "title": title,
+        "date": date.strftime("%m/%d"),
+        "weather": condition.get("text") or "取得できません",
+        "icon": icon_url(condition.get("icon")),
+        "temp_max": display_number(day.get("maxtemp_c"), "℃"),
+        "temp_min": display_number(day.get("mintemp_c"), "℃"),
+        "slots": rain_slots(forecast, date),
+    }
+
+
+def page_context():
+    payload, fetched_at, stale, error = weather_cache.get()
+    today = jst_now().date()
+    cards = [forecast_card(payload, today, "今日"),
+             forecast_card(payload, today + dt.timedelta(days=1), "明日")]
+    current = as_dict(as_dict(payload).get("current"))
+    updated_text = "—"
+    current_recent = False
+    try:
+        # epochはUTCの絶対時刻として扱い、画面では日本時間へ変換。
+        updated = dt.datetime.fromtimestamp(float(current["last_updated_epoch"]), JST)
+        updated_text = updated.strftime("%Y/%m/%d %H:%M")
+        current_recent = -300 <= (jst_now() - updated).total_seconds() < MAX_CACHE_SECONDS
+    except (KeyError, TypeError, ValueError, OverflowError, OSError):
+        pass
+    if not current_recent:
+        current = {}
+    state = "最新の取得結果"
+    message = ""
+    if payload is None:
+        state = "天気情報を取得できません"
+        message = "時間をおいて再取得します。"
+    elif stale:
+        state = "更新できないため、前回の取得結果を表示しています"
+    elif not current_recent or any(c["temp_max"] == "—" or c["weather"] == "取得できません" for c in cards):
+        state = "一部の情報を取得できません"
+    return {
+        "location_label": os.environ.get("WEATHER_LOCATION_LABEL", "富山市"),
+        "cards": cards,
+        "current": {
+            "temp": display_number(current.get("temp_c"), "℃"),
+            "humidity": display_number(current.get("humidity"), "%", 0, 100),
+            "precip": display_number(current.get("precip_mm"), "mm", 0),
+            "updated": updated_text,
+            "unavailable": not current_recent,
+        },
+        "fetched_at": fetched_at.strftime("%Y/%m/%d %H:%M") if fetched_at else "—",
+        "state": state,
+        "message": message,
+        "warning": payload is None or stale or state == "一部の情報を取得できません",
+        "refresh_seconds": PAGE_REFRESH_SECONDS,
+    }
+
+
+def weather_page(template):
+    response = make_response(render_template(template, **page_context()))
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
+
+
+@app.route("/")
 def web():
-#HTML解析
-    url = 'https://tenki.jp/forecast/4/19/5510/16201/'
-    r = requests.get(url)
-    bsObj = BeautifulSoup(r.content, "html.parser")
-    today = bsObj.find(class_="today-weather")
+    return weather_page("index.html")
 
-#今日の天気の取得
-    weather = today.p.string
 
-#今日の気温の取得
-    temp = today.div.find(class_="date-value-wrap")
-    temp = temp.find_all("dd")
-    temp_max = temp[0].span.string #最高気温
-    temp_max_diff = temp[1].string #最高気温の前日比
-    temp_min = temp[2].span.string #最低気温
-    temp_min_diff = temp[3].string #最低気温の前日比
-
-#今日の降水確率の取得
-    precip = bsObj.find(class_="precip-table")
-    precip = precip.find("tr", class_='rain-probability').find_all('td')
-    precip_earlymorning = precip[0].text #00-06
-    precip_morning = precip[1].text #06-12
-    precip_noon = precip[2].text #12-18
-    precip_afternoon = precip[3].text #18-24
-
-#風向きの取得
-    wind = bsObj.find(class_="precip-table")
-    wind = wind.find("tr", class_='wind-wave').find_all('td')
-    wind = wind[0].text
-
-#明日の天気の取得
-    tomorrow = bsObj.find(class_="tomorrow-weather")
-    tomorrow_weather = tomorrow.p.string
-
-#明日の気温の取得
-    temp_tomorrow = tomorrow.div.find(class_="date-value-wrap")
-    temp_tomorrow = temp_tomorrow.find_all("dd")
-    temp_tomorrow_max = temp_tomorrow[0].span.string #最高気温
-    temp_tomorrow_max_diff = temp_tomorrow[1].string #最高気温の前日比
-    temp_tomorrow_min = temp_tomorrow[2].span.string #最低気温
-    temp_tomorrow_min_diff = temp_tomorrow[3].string #最低気温の前日比
-
-#明日の降水確率の取得
-    precip = tomorrow.find(class_="precip-table")
-    precip = precip.find("tr", class_='rain-probability').find_all('td')
-    precip_earlymorning_tomorrow = precip[0].text #00-06
-    precip_morning_tomorrow = precip[1].text #06-12
-    precip_noon_tomorrow = precip[2].text #12-18
-    precip_afternoon_tomorrow = precip[3].text #18-24
-
-#明日の風向きの取得
-    wind_tomorrow = tomorrow.find(class_="precip-table")
-    wind_tomorrow = wind_tomorrow.find("tr", class_="wind-wave").find_all('td')
-    wind_tomorrow = wind_tomorrow[0].text
-
-#現在情報の取得(気温、湿度)
-    nowurl = 'https://tenki.jp/live/4/19/'
-    r = requests.get(nowurl)
-    bsObj = BeautifulSoup(r.content, "html.parser")
-    main_column = bsObj.find(class_="main-column")
-    get_time = main_column.find("time", class_="date-time").text
-    now_temp = main_column.find("td", class_="temp-entry").text
-    now_humidity = main_column.find("td", class_="humidity-entry").text
-    now_precip = main_column.find("td", class_="precip-entry").text
-
-#災害情報の取得
-    city = []
-    warnurl = 'https://tenki.jp/bousai/warn/4/19/'
-    r = requests.get(warnurl)
-    bsObj = BeautifulSoup(r.content, "html.parser")
-    main = bsObj.find(class_="main-column")
-    cityname = main.find_all("th", class_="map-warn-point")
-    alertname = main.find_all('p', class_='warn-kind-entries')
-    alert_toyama_prefecture = main.find("div", class_="map-warn-pref-entries").find_all("p")
-    alert_toyama_prefecture = alert_toyama_prefecture[0].text
-
-#各市町村の名前と注意報の取得
-    k = 0
-    for set_city in range(15):
-        city.append(cityname[k].text)
-        alert.append(alertname[k].text)
-        k = k + 1
-
-#index.htmlに送る変数の定義
-    values = {"weather": weather, "temp_max": temp_max, "temp_max_diff": temp_max_diff, "temp_min": temp_min, "temp_min_diff": temp_min_diff, "get_time": get_time, 'now_temp': now_temp, 'now_humidity': now_humidity, 'now_precip': now_precip}
-    precip = {"precip_earlymorning": precip_earlymorning, "precip_morning": precip_morning, "precip_noon": precip_noon, "precip_afternoon": precip_afternoon}
-    wind = {'wind': wind}
-    tomorrow = {"weather": tomorrow_weather, "temp_max": temp_tomorrow_max, "temp_max_diff": temp_tomorrow_max_diff, "temp_min": temp_tomorrow_min, "temp_min_diff": temp_tomorrow_min_diff}
-    tomorrow_precip = {"precip_earlymorning_tomorrow": precip_earlymorning_tomorrow, "precip_morning_tomorrow": precip_morning_tomorrow, "precip_noon_tomorrow": precip_noon_tomorrow, "precip_afternoon_tomorrow": precip_afternoon_tomorrow}
-    tomorrow_wind = {'wind_tomorrow': wind_tomorrow}
-    icon = '/static/img/晴.png'
-    icon = {'icon': icon}
-
-#index.htmlに現在時刻を送るが、表示はしていない(サイネージのスライドだとズレが生じる)　日付だけだといいかも？
-    now = datetime.datetime.now()
-    now = "{0:%Y/%m/%d  %H:%M:%S}".format(now)
-    now = {"now": now}
-
-    return render_template('index.html', icon = icon, values = values, precip = precip, wind = wind, tomorrow = tomorrow, tomorrow_precip = tomorrow_precip, tomorrow_wind = tomorrow_wind, now = now)
-
-@app.route('/honsya')
+@app.route("/honsya")
 def honsya():
-    #HTML解析
-    url = 'https://tenki.jp/forecast/4/19/5510/16201/'
-    r = requests.get(url)
-    bsObj = BeautifulSoup(r.content, "html.parser")
-    today = bsObj.find(class_="today-weather")
+    return weather_page("honsya.html")
 
-#今日の天気の取得
-    weather = today.p.string
 
-#今日の気温の取得
-    temp = today.div.find(class_="date-value-wrap")
-    temp = temp.find_all("dd")
-    temp_max = temp[0].span.string #最高気温
-    temp_max_diff = temp[1].string #最高気温の前日比
-    temp_min = temp[2].span.string #最低気温
-    temp_min_diff = temp[3].string #最低気温の前日比
+@app.route("/healthz")
+def healthz():
+    # Renderの生存確認では外部APIを呼ばない。
+    return {"status": "ok"}
 
-#今日の降水確率の取得
-    precip = bsObj.find(class_="precip-table")
-    precip = precip.find("tr", class_='rain-probability').find_all('td')
-    precip_earlymorning = precip[0].text #00-06
-    precip_morning = precip[1].text #06-12
-    precip_noon = precip[2].text #12-18
-    precip_afternoon = precip[3].text #18-24
 
-#風向きの取得
-    wind = bsObj.find(class_="precip-table")
-    wind = wind.find("tr", class_='wind-wave').find_all('td')
-    wind = wind[0].text
-
-#明日の天気の取得
-    tomorrow = bsObj.find(class_="tomorrow-weather")
-    tomorrow_weather = tomorrow.p.string
-
-#明日の気温の取得
-    temp_tomorrow = tomorrow.div.find(class_="date-value-wrap")
-    temp_tomorrow = temp_tomorrow.find_all("dd")
-    temp_tomorrow_max = temp_tomorrow[0].span.string #最高気温
-    temp_tomorrow_max_diff = temp_tomorrow[1].string #最高気温の前日比
-    temp_tomorrow_min = temp_tomorrow[2].span.string #最低気温
-    temp_tomorrow_min_diff = temp_tomorrow[3].string #最低気温の前日比
-
-#明日の降水確率の取得
-    precip = tomorrow.find(class_="precip-table")
-    precip = precip.find("tr", class_='rain-probability').find_all('td')
-    precip_earlymorning_tomorrow = precip[0].text #00-06
-    precip_morning_tomorrow = precip[1].text #06-12
-    precip_noon_tomorrow = precip[2].text #12-18
-    precip_afternoon_tomorrow = precip[3].text #18-24
-
-#明日の風向きの取得
-    wind_tomorrow = tomorrow.find(class_="precip-table")
-    wind_tomorrow = wind_tomorrow.find("tr", class_="wind-wave").find_all('td')
-    wind_tomorrow = wind_tomorrow[0].text
-
-#現在情報の取得(気温、湿度)
-    nowurl = 'https://tenki.jp/live/4/19/'
-    r = requests.get(nowurl)
-    bsObj = BeautifulSoup(r.content, "html.parser")
-    main_column = bsObj.find(class_="main-column")
-    get_time = main_column.find("time", class_="date-time").text
-    now_temp = main_column.find("td", class_="temp-entry").text
-    now_humidity = main_column.find("td", class_="humidity-entry").text
-    now_precip = main_column.find("td", class_="precip-entry").text
-
-#honsya.htmlに送る変数の定義
-    values = {"weather": weather, "temp_max": temp_max, "temp_max_diff": temp_max_diff, "temp_min": temp_min, "temp_min_diff": temp_min_diff, "get_time": get_time, 'now_temp': now_temp, 'now_humidity': now_humidity, 'now_precip': now_precip}
-    precip = {"precip_earlymorning": precip_earlymorning, "precip_morning": precip_morning, "precip_noon": precip_noon, "precip_afternoon": precip_afternoon}
-    wind = {'wind': wind}
-    tomorrow = {"weather": tomorrow_weather, "temp_max": temp_tomorrow_max, "temp_max_diff": temp_tomorrow_max_diff, "temp_min": temp_tomorrow_min, "temp_min_diff": temp_tomorrow_min_diff}
-    tomorrow_precip = {"precip_earlymorning_tomorrow": precip_earlymorning_tomorrow, "precip_morning_tomorrow": precip_morning_tomorrow, "precip_noon_tomorrow": precip_noon_tomorrow, "precip_afternoon_tomorrow": precip_afternoon_tomorrow}
-    tomorrow_wind = {'wind_tomorrow': wind_tomorrow}
-    icon = '/static/img/晴.png'
-    icon = {'icon': icon}
-
-#honsya.htmlに現在時刻を送るが、表示はしていない(サイネージのスライドだとズレが生じる)　日付だけだといいかも？
-    now = datetime.datetime.now()
-    now = "{0:%Y/%m/%d  %H:%M:%S}".format(now)
-    now = {"now": now}
-    return render_template('honsya.html', icon = icon, values = values, precip = precip, wind = wind, tomorrow = tomorrow, tomorrow_precip = tomorrow_precip, tomorrow_wind = tomorrow_wind, now = now)
-
-if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=5000)
-    schedule.every(5).minute.do(web)
+if __name__ == "__main__":
+    app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", "5000")))
