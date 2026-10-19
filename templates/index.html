@@ -100,7 +100,7 @@
   <main>
     <div class="status{% if warning %} warning{% endif %}" role="status">
       <p>{{ state }}{% if message %} ／ {{ message }}{% endif %}</p>
-      <p>{{ location_label }} ／ 最終取得：{{ fetched_at }}（日本時間）</p>
+      <p>{{ location_label }} ／ 最終取得：{{ fetched_at }}</p>
     </div>
     <div class="forecast-grid">
     {% for card in cards %}
@@ -136,7 +136,7 @@
     </div>
 {% block current %}
     <section class="current" aria-label="現在の天気情報">
-      <h2>現在の天気情報<span class="current-time">データ更新：{{ current.updated }}（日本時間）{% if current.unavailable %} ／ 現在情報は未取得または有効期限切れです{% endif %}</span></h2>
+      <h2>現在の天気情報<span class="current-time">データ更新：{{ current.updated }}{% if current.unavailable %} ／ 現在情報は未取得または有効期限切れです{% endif %}</span></h2>
       <dl>
         <div><dt>気温</dt><dd class="max">{{ current.temp }}</dd></div>
         <div><dt>湿度</dt><dd class="min">{{ current.humidity }}</dd></div>
@@ -146,8 +146,6 @@
 {% endblock %}
     <footer>
       <p>天気情報提供：<a href="https://www.weatherapi.com/" target="_blank" rel="noopener noreferrer">WeatherAPI.com</a></p>
-      <p>雨・雪の確率は、各6時間内の時間別予報にある雨・雪それぞれの確率の最大値です。6時間全体の降水確率ではありません。「—」は未取得の項目です。</p>
-      <p>天気情報は参考情報です。予報・現在情報には不確実性があり、地点や時刻によって実際の天気と異なる場合があります。安全・防災・航空・船舶などの判断では本情報だけに依存せず、気象庁などの公的機関の最新情報をご確認ください。</p>
     </footer>
   </main>
 </div>
